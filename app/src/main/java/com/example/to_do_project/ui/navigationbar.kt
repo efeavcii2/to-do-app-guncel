@@ -28,33 +28,28 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.to_do_project.ui.theme.ToDoProjectTheme
 import com.example.to_do_project.R
+import com.example.to_do_project.achievementscreen
 
 
 @Composable
 fun navigationbar(navController: NavHostController = rememberNavController()) {
-    val navController= rememberNavController()
-
-
-    NavHost(navController = navController, startDestination ="Home" , modifier = Modifier.padding()) {
-        composable("Home"){
-            LaunchedEffect(Unit) {
-
-
-            }
+    val homeViewModel: HomeViewModel = hiltViewModel()
+    NavHost(navController = navController, startDestination = "Home") {
+        composable("Home") {
+            // Home composable'ınızı buraya ekleyin
         }
-        /*
-        composable("datescreen"){
-            datescreen()
+        composable("achievement") {
+            achievementscreen(viewModel = homeViewModel)
         }
-
-         */
     }
+
 
     BottomAppBar( modifier = Modifier.height(60.dp),
         containerColor = Color.Blue,
@@ -86,7 +81,7 @@ fun navigationbar(navController: NavHostController = rememberNavController()) {
             Box(modifier = Modifier
                 .weight(1f)
                 .wrapContentWidth(Alignment.CenterHorizontally)){
-                IconButton(onClick = { /*TODO*/ }) {
+                IconButton(onClick = { navController.navigate("achievement") }) {
                     Image(painter = painterResource(id = R.drawable.achilogo), contentDescription = "")
 
 

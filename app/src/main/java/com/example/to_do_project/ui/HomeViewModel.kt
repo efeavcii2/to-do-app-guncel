@@ -13,6 +13,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringSetPreferencesKey
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.to_do_project.data.dataStore
@@ -29,7 +30,7 @@ import javax.inject.Inject
 
 
 @HiltViewModel
-class HomeViewModel @Inject constructor(@ApplicationContext context:Context,private val preferenceManager: tododatastore):ViewModel(){
+class HomeViewModel @Inject constructor(@ApplicationContext context:Context,private val preferenceManager: tododatastore,private val savedStateHandle: SavedStateHandle):ViewModel(){
     private val dataStore: DataStore<Preferences> = context.dataStore
 
     companion object {
@@ -41,6 +42,9 @@ class HomeViewModel @Inject constructor(@ApplicationContext context:Context,priv
 
     private val _checkboxStates = MutableStateFlow<List<Boolean>>(emptyList())
     val checkboxStates: StateFlow<List<Boolean>> = _checkboxStates
+
+    private val _checkedCheckboxCount = MutableStateFlow(0)
+    val checkedCheckboxCount: StateFlow<Int> = _checkedCheckboxCount
 
     init {
         viewModelScope.launch {
@@ -60,8 +64,13 @@ class HomeViewModel @Inject constructor(@ApplicationContext context:Context,priv
             preferenceManager.checkboxStatesFlow(size)
                 .collect { states ->
                     _checkboxStates.value = states
+                    updateCheckedCheckboxCount(states)
                 }
         }
+    }
+
+    private fun updateCheckedCheckboxCount(states: List<Boolean>) {
+        _checkedCheckboxCount.value = states.count { it }
     }
 
     fun addTextField(text: String) {
@@ -87,6 +96,7 @@ class HomeViewModel @Inject constructor(@ApplicationContext context:Context,priv
             for (i in newStates.indices) {
                 preferenceManager.saveCheckboxState(i, newStates[i])
             }
+            updateCheckedCheckboxCount(newStates)
         }
     }
 
@@ -94,6 +104,7 @@ class HomeViewModel @Inject constructor(@ApplicationContext context:Context,priv
         viewModelScope.launch {
             _checkboxStates.value = _checkboxStates.value.toMutableList().apply { removeAt(index) }
             preferenceManager.saveCheckboxState(index, false) // Reset state or remove key
+            updateCheckedCheckboxCount(_checkboxStates.value)
         }
     }
 
@@ -107,6 +118,7 @@ class HomeViewModel @Inject constructor(@ApplicationContext context:Context,priv
         viewModelScope.launch {
             preferenceManager.saveCheckboxState(index, isChecked)
             _checkboxStates.value = _checkboxStates.value.toMutableList().apply { set(index, isChecked) }
+            updateCheckedCheckboxCount(_checkboxStates.value)
         }
     }
 
@@ -117,5 +129,4 @@ class HomeViewModel @Inject constructor(@ApplicationContext context:Context,priv
             }
         }
     }
-
 }

@@ -90,4 +90,5 @@ dependencies {
     kapt ("com.google.dagger:hilt-compiler:2.45")
     implementation ("io.coil-kt:coil-compose:2.4.0")
 
+
 }

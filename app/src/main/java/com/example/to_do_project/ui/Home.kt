@@ -38,6 +38,8 @@ import androidx.compose.ui.draw.alpha
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHost
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.to_do_project.achievementscreen
 import com.example.to_do_project.ui.todocreate.create
@@ -56,8 +58,12 @@ class MainActivity : ComponentActivity() {
                 val viewModel: HomeViewModel by viewModels()
                 Home(viewModel, navController = rememberNavController())
 
+                val navController = rememberNavController()
+                NavHost(navController = navController, startDestination = "home") {
+                    composable("home") {}
+                    composable("achievement") { }
 
-
+                }
             }
         }
     }
