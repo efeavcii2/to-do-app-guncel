@@ -53,7 +53,7 @@ fun navigationbar(navController: NavHostController = rememberNavController()) {
 
     NavHost(navController = navController, startDestination = "Home") {
         composable("Home") {
-            // Home composable'ınızı buraya ekleyin
+
         }
         composable("achievement") {
             achievementscreen(viewModel = homeViewModel)
