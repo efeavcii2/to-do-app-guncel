@@ -2,6 +2,7 @@ package com.example.to_do_project.ui.todouptade
 
 import android.icu.util.Calendar
 import android.widget.DatePicker
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -53,7 +54,7 @@ fun uptade(
 ) {
     val checkboxStates by viewModel.checkboxStates.collectAsState()
     val textFields by viewModel.textFields.collectAsState(initial = emptyList())
-    val context= LocalContext.current
+    val context = LocalContext.current
     fun openDatePicker(index: Int) {
         val calendar = Calendar.getInstance()
         val year = calendar.get(Calendar.YEAR)
@@ -63,7 +64,6 @@ fun uptade(
         val datePickerDialog = android.app.DatePickerDialog(
             context,
             { _: DatePicker, selectedYear: Int, selectedMonth: Int, selectedDayOfMonth: Int ->
-                // Tarih seçildiğinde mevcut TextField'ın değerini güncelle
                 val selectedDate = "$selectedDayOfMonth/${selectedMonth + 1}/$selectedYear"
                 viewModel.updateTodo(index, selectedDate)
             }, year, month, day
@@ -94,15 +94,15 @@ fun uptade(
                     },
                     leadingIcon = {
                         IconButton(onClick = { openDatePicker(index) }) {
-                            Icon(Icons.Filled.DateRange, contentDescription = "", tint = Color.White)
+                            Image(painter = painterResource(id = R.drawable.dateicon), contentDescription ="" )
                         }
                     },
                     trailingIcon = {
                         IconButton(onClick = { viewModel.removeTextField(index) }) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.deleteimg),
+                            Image(
+                                painter = painterResource(id = R.drawable.deleteicon),
                                 contentDescription = "Delete To-Do",
-                                tint = Color.White
+
                             )
                         }
                     },

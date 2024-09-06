@@ -41,6 +41,16 @@ import com.example.to_do_project.achievementscreen
 @Composable
 fun navigationbar(navController: NavHostController = rememberNavController()) {
     val homeViewModel: HomeViewModel = hiltViewModel()
+    val currentColor = remember { mutableStateOf(Color.Blue) }
+
+
+    val colors = listOf(Color.Blue, Color.Red, Color.Black, Color.Magenta, Color.Cyan)
+    fun changeColor() {
+        val currentIndex = colors.indexOf(currentColor.value)
+        val nextIndex = (currentIndex + 1) % colors.size
+        currentColor.value = colors[nextIndex]
+    }
+
     NavHost(navController = navController, startDestination = "Home") {
         composable("Home") {
             // Home composable'ınızı buraya ekleyin
@@ -52,7 +62,7 @@ fun navigationbar(navController: NavHostController = rememberNavController()) {
 
 
     BottomAppBar( modifier = Modifier.height(60.dp),
-        containerColor = Color.Blue,
+        containerColor = currentColor.value,
         content = {
             Box(
                 modifier = Modifier
@@ -64,20 +74,7 @@ fun navigationbar(navController: NavHostController = rememberNavController()) {
 
                 }
             }
-            /*
-            Box(
-                modifier = Modifier
-                    .weight(1f)
-                    .wrapContentWidth(Alignment.CenterHorizontally)
-            ){
-                IconButton(onClick = { navController.navigate("datescreen") }) {
 
-                    Icon(Icons.Filled.DateRange, contentDescription = "Date", tint = Color.White)
-
-                }
-            }
-
-             */
             Box(modifier = Modifier
                 .weight(1f)
                 .wrapContentWidth(Alignment.CenterHorizontally)){
@@ -85,6 +82,16 @@ fun navigationbar(navController: NavHostController = rememberNavController()) {
                     Image(painter = painterResource(id = R.drawable.achilogo), contentDescription = "")
 
 
+                }
+            }
+            Box(modifier = Modifier
+                .weight(1f)
+                .wrapContentWidth(Alignment.CenterHorizontally)){
+                IconButton(onClick = {
+                    changeColor()
+
+                }) {
+                    Image(painter = painterResource(id = R.drawable.theme), contentDescription = "")
                 }
             }
 

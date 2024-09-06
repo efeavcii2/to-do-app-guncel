@@ -77,6 +77,7 @@ fun Home(viewModel: HomeViewModel = hiltViewModel(), navController: NavHostContr
     //val textFields by remember { mutableStateOf(viewModel.todoList) }
     val textFields by viewModel.textFields.collectAsState(initial = emptyList())
 
+
     Scaffold(
         topBar = {
             topappbar()
