@@ -1,6 +1,8 @@
 package com.example.to_do_project.ui
 
+import NotificationWorker
 import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -41,17 +43,29 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
+import androidx.work.WorkRequest
 import com.example.to_do_project.achievementscreen
 import com.example.to_do_project.ui.todocreate.create
 import com.example.to_do_project.ui.todocreate.create
 
+
 import com.example.to_do_project.ui.tododelete.delete
 import com.example.to_do_project.ui.todouptade.uptade
+import java.util.concurrent.TimeUnit
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // Bildirim işini planla
+        val notificationWorkRequest = OneTimeWorkRequestBuilder<NotificationWorker>()
+            .setInitialDelay(30 , TimeUnit.MINUTES) 
+            .build()
+        WorkManager.getInstance(this).enqueue(notificationWorkRequest)
+
 
         setContent {
             ToDoProjectTheme {
@@ -64,8 +78,12 @@ class MainActivity : ComponentActivity() {
                     composable("achievement") { }
 
                 }
+
+
             }
+
         }
+
     }
 }
 
@@ -80,7 +98,7 @@ fun Home(viewModel: HomeViewModel = hiltViewModel(), navController: NavHostContr
 
     Scaffold(
         topBar = {
-            topappbar()
+            topappbar(viewModel = viewModel)
 
         },
         content = {
@@ -90,14 +108,14 @@ fun Home(viewModel: HomeViewModel = hiltViewModel(), navController: NavHostContr
         },
         floatingActionButton = {
             create()
-            },
+        },
         bottomBar = {
             navigationbar()
         },
 
 
+        )
 
-    )
 
 
 

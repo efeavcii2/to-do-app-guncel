@@ -8,6 +8,8 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
@@ -30,8 +32,35 @@ import javax.inject.Inject
 
 
 @HiltViewModel
-class HomeViewModel @Inject constructor(@ApplicationContext context:Context,private val preferenceManager: tododatastore,private val savedStateHandle: SavedStateHandle):ViewModel(){
+class HomeViewModel @Inject constructor(
+    @ApplicationContext context: Context,
+    private val preferenceManager: tododatastore,
+    private val savedStateHandle: SavedStateHandle
+) : ViewModel() {
     private val dataStore: DataStore<Preferences> = context.dataStore
+    private val _topAppBarColor = MutableStateFlow(Color.Blue)
+    val topAppBarColor: StateFlow<Color> = _topAppBarColor
+
+    init {
+        viewModelScope.launch {
+            preferenceManager.getTopAppBarColorFlow()
+                .collect { colorHex ->
+                    _topAppBarColor.value = Color(
+                        android.graphics.Color.parseColor(
+                            colorHex ?: "#0000FF"
+                        )
+                    )
+                }
+        }
+    }
+
+    fun setTopAppBarColor(color: Color) {
+        viewModelScope.launch {
+            preferenceManager.saveTopAppBarColor("#${Integer.toHexString(color.toArgb())}")
+            _topAppBarColor.value = color
+        }
+    }
+
 
     companion object {
         private val TEXT_FIELDS_KEY = stringSetPreferencesKey("text_fields_key")
@@ -117,7 +146,8 @@ class HomeViewModel @Inject constructor(@ApplicationContext context:Context,priv
     fun onCheckboxClicked(index: Int, isChecked: Boolean) {
         viewModelScope.launch {
             preferenceManager.saveCheckboxState(index, isChecked)
-            _checkboxStates.value = _checkboxStates.value.toMutableList().apply { set(index, isChecked) }
+            _checkboxStates.value =
+                _checkboxStates.value.toMutableList().apply { set(index, isChecked) }
             updateCheckedCheckboxCount(_checkboxStates.value)
         }
     }

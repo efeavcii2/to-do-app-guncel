@@ -89,6 +89,7 @@ dependencies {
     implementation("com.google.dagger:hilt-android:2.45")
     kapt ("com.google.dagger:hilt-compiler:2.45")
     implementation ("io.coil-kt:coil-compose:2.4.0")
-
-
+    implementation ("io.coil-kt:coil-gif:2.4.0")
+    implementation ("androidx.work:work-runtime-ktx:2.8.1")
+    implementation ("androidx.core:core-ktx:1.10.1")
 }

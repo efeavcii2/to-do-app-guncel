@@ -6,6 +6,12 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.animation.animateColor
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.repeatable
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -35,6 +41,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
@@ -51,6 +58,7 @@ import com.example.to_do_project.ui.Home
 import com.example.to_do_project.ui.HomeViewModel
 import com.example.to_do_project.ui.theme.ToDoProjectTheme
 import kotlinx.coroutines.delay
+
 
 class achievemntactivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -90,8 +98,18 @@ fun achievementscreen(viewModel: HomeViewModel = hiltViewModel()) {
                 painter = painterResource(id = R.drawable.man),
                 contentDescription = "",
                 modifier = Modifier
-                    .padding(top = 69.dp, start = 10.dp)
+                    .padding(top = 79.dp, start = 30.dp)
                     .size(70.dp)
+                    .align(
+                        Alignment.TopStart
+                    )
+            )
+            Image(
+                painter = painterResource(id = R.drawable.capture),
+                contentDescription = "",
+                modifier = Modifier
+                    .padding(top = 69.dp, start = 20.dp)
+                    .size(90.dp)
                     .align(
                         Alignment.TopStart
                     )
@@ -124,10 +142,22 @@ fun achievementscreen(viewModel: HomeViewModel = hiltViewModel()) {
                     .padding(top = 550.dp)
                     .size(120.dp)
             )
+            Image(colorFilter = ColorFilter.tint(Color.Cyan),
+                painter = painterResource(id = R.drawable.capture),
+                contentDescription = "",
+                modifier = Modifier
+                    .padding(top = 16.dp, bottom= 1.dp)
+                    .height(41.dp,)
+                    .padding(start = 280.dp)
+                    .size(90.dp)
+                    .align(
+                        Alignment.Center
+                    )
+            )
             Text(
                 text = "Checked To-Do Count: $checkedcount",
                 fontSize = 24.sp,
-                color = Color.Blue,
+                color = Color.Black,
                 fontFamily = FontFamily.Monospace,
                 fontStyle = FontStyle.Italic,
                 fontWeight = FontWeight.Thin,
@@ -135,21 +165,43 @@ fun achievementscreen(viewModel: HomeViewModel = hiltViewModel()) {
                     .padding(top = 16.dp, bottom = 1.dp)
                     .align(Alignment.Center)
             )
+            Image(colorFilter = ColorFilter.tint(Color.Blue),
+                painter = painterResource(id = R.drawable.capture),
+                contentDescription = "",
+                modifier = Modifier
+                    .padding(bottom= 350.dp, end = 17.dp)
+                    .height(41.dp,)
+                    .padding(start = 280.dp)
+                    .size(90.dp)
+            )
             Text(
                 text = "Unchecked To-Do Count: $uncheckedCount",
                 fontSize = 24.sp,
                 fontFamily = FontFamily.Monospace,
-                color = Color.Blue,
+                color = Color.Black,
                 fontStyle = FontStyle.Italic,
                 fontWeight = FontWeight.Thin,
                 modifier = Modifier.padding(8.dp, top = 400.dp)
+            )
+            Image(colorFilter = ColorFilter.tint(Color.Red),
+                painter = painterResource(id = R.drawable.capture),
+                contentDescription = "",
+                modifier = Modifier
+                    .padding(top = 400.dp, start= 38.dp)
+                    .height(41.dp,)
+                    .padding(start = 280.dp)
+                    .size(90.dp)
+                    .align(
+                        Alignment.Center
+                    )
+
             )
 
             Text(
                 text = "Total To-Do Count: $totalCheckboxCount",
                 fontSize = 24.sp,
                 fontFamily = FontFamily.Monospace,
-                color = Color.Blue,
+                color = Color.Black,
                 fontStyle = FontStyle.Italic,
                 fontWeight = FontWeight.Thin,
                 modifier = Modifier.padding(9.dp, bottom = 350.dp)
@@ -176,8 +228,8 @@ fun achievementscreen(viewModel: HomeViewModel = hiltViewModel()) {
         LaunchedEffect(checkedPercentage) {
             if (checkedPercentage.toInt() == 100 && !showPopup) {
                 showPopup = true
-                delay(2000)  // Wait for 3 seconds
-                showPopup = false  // Close the popup
+                delay(3000)
+                showPopup = false
             }
         }
         if (showPopup) {
@@ -187,25 +239,47 @@ fun achievementscreen(viewModel: HomeViewModel = hiltViewModel()) {
                     .background(Color.Black.copy(alpha = 0.9f)),
                 contentAlignment = Alignment.Center
             ) {
+                var colorIndex by remember { mutableStateOf(0) }
+
+
+
+                val transition = updateTransition(targetState = colorIndex, label = "Color Transition")
+
+
+                val colors = listOf(Color.Red, Color.Green, Color.Blue)
+                val backgroundColor by transition.animateColor(
+                    label = "Background Color"
+                ) { state ->
+                    colors[state % colors.size]
+
+                }
+
+                LaunchedEffect(Unit) {
+                    while (true) {
+                        delay(280)
+                        colorIndex = (colorIndex + 1) % colors.size
+                    }
+                }
+
                 Column {
 
 
                     Text(
-                        text = "GOODJOB",
+                        text = "%100 Success",
                         fontFamily = FontFamily.Serif,
                         fontStyle = FontStyle.Italic,
                         fontSize = 32.sp,
-                        color = Color.Blue,
+                        color = Color.Black,
                         modifier = Modifier
-                            .background(Color.White)
+                            .background(backgroundColor)
                             .padding(16.dp)
                     )
                     Image(
                         painter = painterResource(id = R.drawable.kupa),
                         contentDescription = "",
                         Modifier
-                            .size(150.dp)
-                            .padding(start = 25.dp, top = 50.dp)
+                            .size(180.dp)
+                            .padding(start = 65.dp, top = 50.dp)
                     )
                 }
             }

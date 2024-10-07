@@ -26,6 +26,20 @@ data class tododatastore @Inject constructor(@ApplicationContext var context:Con
 
     companion object {
         fun checkboxKey(index: Int) = booleanPreferencesKey("checkbox_key_$index")
+        private val TOP_APP_BAR_COLOR_KEY = stringPreferencesKey("top_app_bar_color")
+
+
+    }
+    suspend fun saveTopAppBarColor(colorHex: String) {
+        dataStore.edit { preferences ->
+            preferences[TOP_APP_BAR_COLOR_KEY] = colorHex
+        }
+    }
+
+    fun getTopAppBarColorFlow(): kotlinx.coroutines.flow.Flow<String?> {
+        return dataStore.data.map { preferences ->
+            preferences[TOP_APP_BAR_COLOR_KEY]
+        }
     }
 
     fun checkboxStatesFlow(textFieldsSize: Int): kotlinx.coroutines.flow.Flow<List<Boolean>> {

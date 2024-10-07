@@ -8,6 +8,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -28,12 +29,13 @@ import com.example.to_do_project.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun topappbar(navController: NavHostController = rememberNavController()) {
-    val colorList = listOf(Color.Blue, Color.Red, Color.Black, Color.Magenta, Color.Cyan)
+fun topappbar(navController: NavHostController = rememberNavController(),viewModel: HomeViewModel) {
+    val colorList = listOf(Color.Blue, Color.Red, Color.Black, Color.Magenta, Color.Cyan,Color.Gray,Color.LightGray,Color.Green)
     var currentColorIndex by remember { mutableStateOf(0) }
 
 
-    val topBarColor = colorList[currentColorIndex]
+    val topBarColor by viewModel.topAppBarColor.collectAsState()
+
 
     val context = LocalContext.current.applicationContext
 
@@ -70,6 +72,7 @@ fun topappbar(navController: NavHostController = rememberNavController()) {
 
             IconButton(onClick = {
                 currentColorIndex = (currentColorIndex + 1) % colorList.size
+                viewModel.setTopAppBarColor(colorList[currentColorIndex])
             }) {
                 Icon(
                     painter = painterResource(id = R.drawable.theme),
